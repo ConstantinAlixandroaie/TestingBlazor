@@ -1,0 +1,91 @@
+﻿@*<Sidebar @ref="sidebar">
+    <SidebarContent>
+        <SidebarBrand>
+            <a href="">Testing Blazor</a>
+        </SidebarBrand>
+        <BarToggler Mode="BarTogglerMode.Popout" />
+        <SidebarNavigation>
+            <SidebarLabel>Main</SidebarLabel>
+            <SidebarItem>
+                <SidebarLink To="" Title="Home">
+                    <Icon Name="IconName.Home" Margin="Margin.Is3.FromRight" />Home
+                </SidebarLink>
+            </SidebarItem>
+            <SidebarItem>
+                <SidebarLink Toggled="(isOpen)=> mailSidebarSubItems.Toggle(isOpen)" IsShow="true">
+                    <Icon Name="IconName.Clock" Margin="Margin.Is3.FromRight" />Counter
+                </SidebarLink>
+                <SidebarSubItem @ref="mailSidebarSubItems" IsShow="true">
+                    <SidebarItem>
+                        <SidebarLink To="Counter">Counter</SidebarLink>
+                    </SidebarItem>
+                    other subitems
+                </SidebarSubItem>
+            </SidebarItem>
+            <SidebarItem>
+                <SidebarLink Toggled="(isOpen)=> appsSidebarSubItems.Toggle(isOpen)" IsShow="true">
+                    <Icon Name="IconName.Smartphone" Margin="Margin.Is3.FromRight" />FetchData
+                </SidebarLink>
+                <SidebarSubItem @ref="appsSidebarSubItems" IsShow="true">
+                    <SidebarItem>
+                        <SidebarLink To="FetchData">FetchData</SidebarLink>
+                    </SidebarItem>
+                </SidebarSubItem>
+            </SidebarItem>
+            <SidebarItem>
+                <SidebarLink To="ProductPage" Title="Home">
+                    <Icon Name="IconName.Book" Margin="Margin.Is3.FromRight" />Product
+                </SidebarLink>
+            </SidebarItem>
+        </SidebarNavigation>
+    </SidebarContent>
+</Sidebar>*@
+
+<Bar Mode="BarMode.VerticalInline"
+     CollapseMode="BarCollapseMode.Small"
+     Breakpoint="Breakpoint.Desktop"
+     NavigationBreakpoint="Breakpoint.Tablet"
+     ThemeContrast="ThemeContrast.Dark">
+    <BarToggler Mode="BarTogglerMode.Popout" />
+    <BarBrand>
+        Testing Blazor
+    </BarBrand>
+    <BarMenu>
+        <BarStart>
+            <BarItem>
+                <BarLink To="">
+                    <BarIcon IconName="IconName.Home" />
+                    Home
+                </BarLink>
+            </BarItem>
+            <BarItem>
+                <BarLink To="Counter">
+                    <BarIcon IconName="IconName.Clock" />
+                    Counter
+                </BarLink>
+            </BarItem>
+            <BarItem>
+                <BarLink To="ProductPage">
+                    <BarIcon IconName="IconName.Book" />
+                    Product
+                </BarLink>
+            </BarItem>
+            <BarItem>
+                <BarDropdown>
+                    <BarDropdownToggle>
+                        <BarIcon IconName="IconName.Edit" />
+                        Dropdown
+                    </BarDropdownToggle>
+                    <BarDropdownMenu>
+                        <BarDropdownItem To="ProductPage">Product</BarDropdownItem>
+                        <BarDropdownItem To="Counter">Counter</BarDropdownItem>
+                    </BarDropdownMenu>
+                </BarDropdown>
+            </BarItem>
+        </BarStart>
+    </BarMenu>
+</Bar>
+
+
+@code{
+}

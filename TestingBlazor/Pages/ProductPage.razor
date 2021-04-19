@@ -1,0 +1,178 @@
+﻿@page "/ProductPage";
+@inject ProductRepository _productRepo;
+@using System.Text.Json;
+@using TestingBlazor.Data.Models
+@using System.Text.Json.Serialization;
+<h3>Product</h3>
+
+
+    <Row>
+        <Column>
+            <Card Margin="Margin.Is4.OnY">
+                <CardHeader>
+                    <CardTitle>Modals (Default)</CardTitle>
+                </CardHeader>
+                <CardBody>
+                    <CardText>
+                        A rendered modal with header, body, and set of actions in the footer.
+                    </CardText>
+                </CardBody>
+                <CardBody>
+                    <Button Clicked="@ShowCreateModal">Add Product
+                    <Icon IconStyle="IconStyle.DuoTone"></Icon>
+                    </Button>
+                </CardBody>
+            </Card>
+        </Column>
+    </Row>
+    <Table>
+        <TableHeader>
+            <TableRow>
+                <TableHeaderCell>#</TableHeaderCell>
+                <TableHeaderCell>Name</TableHeaderCell>
+                <TableHeaderCell>Description</TableHeaderCell>
+            </TableRow>
+        </TableHeader>
+        <TableBody>
+            @if (prodList != null)
+            {
+                @foreach (var item in prodList)
+                {
+                    <TableRow>
+                        <TableRowHeader>@item.Id</TableRowHeader>
+                        <TableRowCell>@item.Name</TableRowCell>
+                        <TableRowCell>@item.Description</TableRowCell>
+                        <TableRowCell>
+                            <Button Clicked="@ShowEditModal" CommandParameter="@item.Id">Edit</Button>
+                            <Button Class="bg-danger">Delete</Button>
+                        </TableRowCell>
+                    </TableRow>
+                }
+            }
+            else
+            {
+                <p>"No records yet"</p>
+            }
+        </TableBody>
+    </Table>
+
+    <Modal @ref="CreateModal">
+        <ModalContent IsCentered="true">
+            <ModalHeader>
+                <ModalTitle>Product</ModalTitle>
+                <CloseButton />
+            </ModalHeader>
+            <ModalBody>
+                <Field>
+                    <FieldLabel>Name</FieldLabel>
+                    <TextEdit Placeholder="Enter name..." @bind-Text="@prod.Name" />
+                </Field>
+                <Field Horizontal="true">
+                    <FieldLabel ColumnSize="ColumnSize.IsFull.OnTablet.Is2.OnDesktop">Description</FieldLabel>
+                    <FieldBody ColumnSize="ColumnSize.IsFull.OnTablet.Is10.OnDesktop">
+                        <TextEdit @bind-Text="@prod.Description" Placeholder="Enter Description..." />
+                    </FieldBody>
+                </Field>
+            </ModalBody>
+            <ModalFooter>
+                <Button Color="Color.Secondary" Clicked="@HideCreateModal">Close</Button>
+                <Button Color="Color.Primary" Clicked="@CreateProduct">Save Changes</Button>
+            </ModalFooter>
+        </ModalContent>
+    </Modal>
+
+    <Modal @ref="EditModal">
+        <ModalContent IsCentered="true">
+            <ModalHeader>
+                <ModalTitle>Product</ModalTitle>
+                <CloseButton />
+            </ModalHeader>
+            <ModalBody>
+                <Field Visibility="Visibility.Never">
+                    <NumericEdit @bind-Value="@newProd.Id"/>
+                </Field>
+                <Field>
+                    <FieldLabel>Name</FieldLabel>
+                    <TextEdit Placeholder="Enter name..." @bind-Text="@newProd.Name" />
+                </Field>
+                <Field Horizontal="true">
+                    <FieldLabel ColumnSize="ColumnSize.IsFull.OnTablet.Is2.OnDesktop">Description</FieldLabel>
+                    <FieldBody ColumnSize="ColumnSize.IsFull.OnTablet.Is10.OnDesktop">
+                        <TextEdit @bind-Text="@newProd.Description" Placeholder="Enter Description..." />
+                    </FieldBody>
+                </Field>
+            </ModalBody>
+            <ModalFooter>
+                <Button Color="Color.Secondary" Clicked="@HideEditModal">Close</Button>
+                <Button Color="Color.Primary" Clicked="@Edit" CommandParameter="@newProd">Save Changes</Button>
+            </ModalFooter>
+        </ModalContent>
+    </Modal>
+
+    @code {
+        @using System.ComponentModel;
+        @using TestingBlazor.Data.Acces;
+        @using CompletKitInstall.ViewModels;
+        @using Microsoft.AspNetCore.Mvc;
+
+        // reference to the modal component
+        private Modal CreateModal;
+        private Modal EditModal;
+
+        IEnumerable<ProductViewModel> prodList;
+        ProductViewModel prod = new ProductViewModel();
+        ProductViewModel newProd = new ProductViewModel();
+
+        // private readonly IHttpClientFactory _clientFactory;
+
+
+        protected override async Task OnInitializedAsync()
+        {
+            await GetProducts();
+        }
+
+        private void ShowCreateModal()
+        {
+            CreateModal.Show();
+        }
+
+        private void HideCreateModal()
+        {
+
+            CreateModal.Hide();
+        }
+        private void ShowEditModal()
+        {
+            EditModal.Show();
+        }
+
+        private void HideEditModal()
+        {
+
+            EditModal.Hide();
+        }
+        private async void CreateProduct()
+        {
+            await _productRepo.Add(prod);
+            CreateModal.Hide();
+            await GetProducts();
+        }
+
+        private async void  Edit()
+        {
+            await _productRepo.Update(prod.Id,newProd);
+            EditModal.Hide();
+            await GetProducts();
+        }
+        private async void RemoveById(Product product)
+        {
+            await _productRepo.RemoveById(product.Id);
+            await GetProducts();
+        }
+
+        private async Task GetProducts()
+        {
+            prodList = await _productRepo.Get();
+            StateHasChanged();
+        }
+    }
